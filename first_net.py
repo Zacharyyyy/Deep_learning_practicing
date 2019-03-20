@@ -20,7 +20,7 @@ testx,testy = sample_points(500)
 
 # Gererate a single layer MLP with "n_hidden_neurons" hidden neurons
 def generate_single_hidden_MLP(n_hidden_neurons):
-    return nn.Sequential(nn.Linear(2,n_hidden_neurons),nn.ReLU(),nn.Linear(n_hidden_neurons,2))
+    return nn.Sequential(nn.Linear(2,n_hidden_neurons),nn.ReLU(),nn.Linear(n_hidden_neurons,n_hidden_neurons),nn.ReLU(),nn.Linear(n_hidden_neurons,2))
 
 model1 = generate_single_hidden_MLP(6)
 
