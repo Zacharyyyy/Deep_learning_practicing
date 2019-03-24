@@ -193,3 +193,39 @@ model = FashionModel()
 model.load_state_dict(torch.load('./rmsprop_model.pt'))
 test_acc = inference(model, test_loader, test_size)
 print("Test accuracy of model optimizer with RMSProp: {0:.2f}".format(test_acc * 100))
+
+
+def init_randn(m):
+    if type(m) == nn.Linear:
+        m.weight.data.normal_(0,1)
+
+normalmodel = FashionModel()
+normalmodel.apply(init_randn)
+
+def init_xavier(m):
+    if type(m) == nn.Linear:
+        fan_in = m.weight.size()[1]
+        fan_out = m.weight.size()[0]
+        std = np.sqrt(2.0 / (fan_in + fan_out))
+        m.weight.data.normal_(0,std)
+
+xaviermodel = FashionModel()
+xaviermodel.apply(init_xavier)
+
+### LET'S TRAIN ###
+n_epochs = 3
+
+print("NORMAL INIT WEIGHTS")
+AdamOptimizer = torch.optim.Adam(normalmodel.parameters(), lr=0.001)
+normal_trainer = Trainer(normalmodel, AdamOptimizer)
+normal_trainer.run(n_epochs)
+normal_trainer.save_model('./normal_model.pt')
+print('')
+
+
+print("XAVIER INIT WEIGHTS")
+AdamOptimizer = torch.optim.Adam(xaviermodel.parameters(), lr=0.001)
+xavier_trainer = Trainer(xaviermodel, AdamOptimizer)
+xavier_trainer.run(n_epochs)
+xavier_trainer.save_model('./xavier_model.pt')
+print('')
